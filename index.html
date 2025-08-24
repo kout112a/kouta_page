@@ -6,16 +6,260 @@
     <title>わんちゃん図鑑🐕</title>
     <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #ff9999;
+            --secondary-color: #ffb6c1;
+            --text-color: #666;
+            --bg-color: #fff5f5;
+        }
+
         body {
             font-family: 'M PLUS Rounded 1c', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #fff5f5;
+            background-color: var(--bg-color);
             background-image: 
                 radial-gradient(#ffcdd2 2px, transparent 2px),
                 radial-gradient(#ffcdd2 2px, transparent 2px);
             background-size: 40px 40px;
             background-position: 0 0, 20px 20px;
+        }
+
+        .page {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            height: 100%;
+            width: 100%;
+        }
+
+        .page.active {
+            display: block;
+            opacity: 1;
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        .detail-page {
+            padding-top: 60px;
+            min-height: 100vh;
+            width: 100%;
+            overflow-y: auto;
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: white;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 1.1rem;
+        }
+
+        .back-button:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateX(-5px);
+        }
+
+        .detail-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .detail-title {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 0 rgba(255, 153, 153, 0.3);
+        }
+
+        .detail-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-color);
+        }
+
+        .detail-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .detail-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .detail-image-container {
+            position: relative;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(255, 153, 153, 0.3);
+        }
+
+        .detail-image {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+        }
+
+        .detail-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .info-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 25px;
+            box-shadow: 0 5px 15px rgba(255, 153, 153, 0.2);
+        }
+
+        .info-title {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-title::before {
+            content: "🐾";
+        }
+
+        .detail-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .detail-stat {
+            background: var(--bg-color);
+            padding: 1rem;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stat-name {
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .gallery-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-image:hover {
+            transform: scale(1.05);
+        }
+
+        .category-nav {
+            background: white;
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(255, 153, 153, 0.2);
+        }
+
+        .category-list {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex-wrap: wrap;
+        }
+
+        .category-button {
+            background: white;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .category-button:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .category-button.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .category-section {
+            margin-top: 2rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .category-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .category-title {
+            text-align: center;
+            color: var(--primary-color);
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .category-title::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: var(--secondary-color);
+            border-radius: 3px;
         }
 
         header {
@@ -143,64 +387,406 @@
             background: white;
             clip-path: polygon(0 0, 100% 0, 50% 100%);
         }
+
+        /* モーダルウィンドウのスタイル */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            position: relative;
+            width: 90%;
+            max-width: 1000px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 25px;
+            transform: scale(0.7);
+            transition: transform 0.3s ease;
+            overflow: hidden;
+        }
+
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-image-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            overflow: hidden;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .modal-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .modal-info {
+            padding: 20px;
+        }
+
+        .modal-title {
+            color: var(--primary-color);
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .modal-description {
+            color: var(--text-color);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-item {
+            background: var(--bg-color);
+            padding: 1rem;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stat-label {
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            color: var(--text-color);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .close-modal:hover {
+            transform: rotate(90deg);
+        }
+
+        .modal-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-navigation {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+            pointer-events: none;
+        }
+
+        .nav-button {
+            background: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            pointer-events: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-button:hover {
+            transform: scale(1.1);
+        }
+
+        @keyframes heartBeat {
+            0% { transform: scale(1); }
+            14% { transform: scale(1.3); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.3); }
+            70% { transform: scale(1); }
+        }
+
+        .dog-card .dog-image {
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .dog-card .dog-image:hover {
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body>
-    <header>
-        <h1 class="header-title">🐕 かわいい犬図鑑 🐕</h1>
-    </header>
+    <div id="main-page" class="page active">
+        <header>
+            <h1 class="header-title">🐕 かわいい犬図鑑 🐕</h1>
+        </header>
+
+        <nav class="category-nav">
+            <ul class="category-list">
+                <li><button class="category-button active" data-category="all">すべて</button></li>
+                <li><button class="category-button" data-category="japanese">日本犬</button></li>
+                <li><button class="category-button" data-category="small">小型犬</button></li>
+                <li><button class="category-button" data-category="medium">中型犬</button></li>
+                <li><button class="category-button" data-category="large">大型犬</button></li>
+            </ul>
+        </nav>
 
     <div class="container">
-        <div class="dog-grid">
-            <div class="dog-card">
-                <img src="https://images.pexels.com/photos/1805164/pexels-photo-1805164.jpeg" alt="柴犬" class="dog-image">
-                <div class="dog-info">
-                    <h2 class="dog-name">柴犬</h2>
-                    <p class="dog-description">日本固有の犬種で、忠実で賢く、愛情深い性格が特徴です。小型で活発、そして表情が豊かな愛らしい犬種です。</p>
-                    <div class="dog-tags">
-                        <span class="tag">日本犬</span>
-                        <span class="tag">賢い</span>
-                        <span class="tag">忠実</span>
+        <!-- 日本犬 -->
+        <section class="category-section" id="japanese">
+            <h2 class="category-title">日本犬</h2>
+            <div class="dog-grid">
+                <div class="dog-card" data-category="japanese">
+                    <img src="https://images.pexels.com/photos/1805164/pexels-photo-1805164.jpeg" alt="柴犬" class="dog-image">
+                    <div class="dog-info">
+                        <h2 class="dog-name">柴犬</h2>
+                        <p class="dog-description">日本固有の犬種で、忠実で賢く、愛情深い性格が特徴です。狩猟犬として育てられた歴史を持ち、機敏な動きと鋭い感覚を持っています。体重は8-10kg程度で、活発で愛らしい性格から、現代では家庭犬として人気があります。</p>
+                        <div class="dog-tags">
+                            <span class="tag">日本犬</span>
+                            <span class="tag">賢い</span>
+                            <span class="tag">忠実</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="dog-card" data-category="japanese">
+                    <img src="https://images.pexels.com/photos/3726314/pexels-photo-3726314.jpeg" alt="秋田犬" class="dog-image">
+                    <div class="dog-info">
+                        <h2 class="dog-name">秋田犬</h2>
+                        <p class="dog-description">日本の天然記念物に指定された大型犬です。忠誠心が強く、穏やかな性格が特徴です。かつては狩猟犬として使われていました。体重は雄で45-50kg、雌で35-45kgと大柄で、寒さに強い二重被毛を持っています。</p>
+                        <div class="dog-tags">
+                            <span class="tag">日本犬</span>
+                            <span class="tag">大型</span>
+                            <span class="tag">忠誠心</span>
+                        </div>
                     </div>
                 </div>
             </div>
+        </section>
 
-            <div class="dog-card">
-                <img src="https://images.pexels.com/photos/1490908/pexels-photo-1490908.jpeg" alt="ゴールデン・レトリバー" class="dog-image">
-                <div class="dog-info">
-                    <h2 class="dog-name">ゴールデン・レトリバー</h2>
-                    <p class="dog-description">優しい性格と知的な表情が特徴的な大型犬です。家族思いで、特に子供との相性が抜群です。</p>
-                    <div class="dog-tags">
-                        <span class="tag">大型犬</span>
-                        <span class="tag">優しい</span>
-                        <span class="tag">家族向き</span>
+        <!-- 小型犬 -->
+        <section class="category-section" id="small">
+            <h2 class="category-title">小型犬</h2>
+            <div class="dog-grid">
+                <div class="dog-card" data-category="small">
+                    <img src="https://images.pexels.com/photos/5122188/pexels-photo-5122188.jpeg" alt="トイプードル" class="dog-image">
+                    <div class="dog-info">
+                        <h2 class="dog-name">トイプードル</h2>
+                        <p class="dog-description">非常に賢く、学習能力が高い小型犬です。体重は3-4kg程度で、アレルギー反応が少ない被毛を持つことから、室内飼いに適しています。運動量は適度で、トリミングを定期的に行う必要があります。長寿で15年以上生きることも珍しくありません。</p>
+                        <div class="dog-tags">
+                            <span class="tag">小型犬</span>
+                            <span class="tag">利口</span>
+                            <span class="tag">長寿</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="dog-card" data-category="small">
+                    <img src="https://images.pexels.com/photos/2023384/pexels-photo-2023384.jpeg" alt="チワワ" class="dog-image">
+                    <div class="dog-info">
+                        <h2 class="dog-name">チワワ</h2>
+                        <p class="dog-description">世界最小の犬種として知られ、体重は1.5-3kg程度です。小さな体格ながら、勇敢で活発な性格を持ちます。飼い主に深く愛着を示し、警戒心が強いため番犬としての素質も持っています。室内飼いに適していますが、定期的な運動は必要です。</p>
+                        <div class="dog-tags">
+                            <span class="tag">超小型犬</span>
+                            <span class="tag">勇敢</span>
+                            <span class="tag">愛着深い</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="dog-card" data-category="small">
+                    <img src="https://images.pexels.com/photos/3687770/pexels-photo-3687770.jpeg" alt="ヨークシャーテリア" class="dog-image">
+                    <div class="dog-info">
+                        <h2 class="dog-name">ヨークシャーテリア</h2>
+                        <p class="dog-description">小さな体に大きな活力を秘めた犬種です。体重は2-3kg程度で、シルクのような長い被毛が特徴的です。テリア特有の活発な性格を持ち、賢く、勇敢です。定期的なグルーミングが必要ですが、抜け毛は少なめです。</p>
+                        <div class="dog-tags">
+                            <span class="tag">小型犬</span>
+                            <span class="tag">活発</span>
+                            <span class="tag">長毛種</span>
+                        </div>
                     </div>
                 </div>
             </div>
+        </section>
 
-            <div class="dog-card">
-                <img src="https://images.pexels.com/photos/5122188/pexels-photo-5122188.jpeg" alt="トイプードル" class="dog-image">
-                <div class="dog-info">
-                    <h2 class="dog-name">トイプードル</h2>
-                    <p class="dog-description">賢く愛らしい小型犬の代表格です。利口で学習能力が高く、とても愛情深い性格をしています。</p>
-                    <div class="dog-tags">
-                        <span class="tag">小型犬</span>
-                        <span class="tag">利口</span>
-                        <span class="tag">愛情深い</span>
+        <!-- 中型犬 -->
+        <section class="category-section" id="medium">
+            <h2 class="category-title">中型犬</h2>
+            <div class="dog-grid">
+                <div class="dog-card" data-category="medium">
+                    <img src="https://images.pexels.com/photos/1139795/pexels-photo-1139795.jpeg" alt="ボーダーコリー" class="dog-image">
+                    <div class="dog-info">
+                        <h2 class="dog-name">ボーダーコリー</h2>
+                        <p class="dog-description">世界一頭の良い犬種として知られています。体重は18-25kg程度で、非常に高い運動能力と知能を持ちます。牧羊犬として育てられた歴史があり、学習意欲が高く、飼い主との深い絆を重視します。十分な運動と知的な刺激が必要です。</p>
+                        <div class="dog-tags">
+                            <span class="tag">中型犬</span>
+                            <span class="tag">最も賢い</span>
+                            <span class="tag">運動派</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="dog-card" data-category="medium">
+                    <img src="https://images.pexels.com/photos/3090875/pexels-photo-3090875.jpeg" alt="シベリアンハスキー" class="dog-image">
+                    <div class="dog-info">
+                        <h2 class="dog-name">シベリアンハスキー</h2>
+                        <p class="dog-description">そり犬として知られる美しい犬種です。体重は20-30kg程度で、寒冷地での生活に適応した二重被毛を持ちます。独立心が強く、活発で、持久力があります。定期的な運動が不可欠で、特に寒い季節は活発に活動します。</p>
+                        <div class="dog-tags">
+                            <span class="tag">中型犬</span>
+                            <span class="tag">そり犬</span>
+                            <span class="tag">活発</span>
+                        </div>
                     </div>
                 </div>
             </div>
+        </section>
 
-            <div class="dog-card">
-                <img src="https://images.pexels.com/photos/2023384/pexels-photo-2023384.jpeg" alt="チワワ" class="dog-image">
-                <div class="dog-info">
-                    <h2 class="dog-name">チワワ</h2>
-                    <p class="dog-description">世界最小の犬種として知られる愛らしい犬です。勇敢で忠実な性格で、飼い主に深く愛着を示します。</p>
-                    <div class="dog-tags">
-                        <span class="tag">超小型犬</span>
-                        <span class="tag">勇敢</span>
-                        <span class="tag">愛着深い</span>
+        <!-- 大型犬 -->
+        <section class="category-section" id="large">
+            <h2 class="category-title">大型犬</h2>
+            <div class="dog-grid">
+                <div class="dog-card" data-category="large">
+                    <img src="https://images.pexels.com/photos/1490908/pexels-photo-1490908.jpeg" alt="ゴールデン・レトリバー" class="dog-image">
+                    <div class="dog-info">
+                        <h2 class="dog-name">ゴールデン・レトリバー</h2>
+                        <p class="dog-description">優しい性格と知的な表情が特徴的な大型犬です。体重は25-34kg程度で、金色の被毛が美しく、水泳が得意です。家族思いで特に子供との相性が抜群です。介助犬や警察犬としても活躍しており、訓練性が高く、忠実な性格をしています。</p>
+                        <div class="dog-tags">
+                            <span class="tag">大型犬</span>
+                            <span class="tag">優しい</span>
+                            <span class="tag">家族向き</span>
+                        </div>
                     </div>
+                </div>
+                <div class="dog-card" data-category="large">
+                    <img src="https://images.pexels.com/photos/333083/pexels-photo-333083.jpeg" alt="バーニーズマウンテンドッグ" class="dog-image">
+                    <div class="dog-info">
+                        <h2 class="dog-name">バーニーズマウンテンドッグ</h2>
+                        <p class="dog-description">スイスアルプス原産の大型犬で、体重は35-50kg程度です。三色の美しい被毛と穏やかな性格が特徴で、荷物を引く仕事犬として活躍した歴史があります。家族に忠実で、子供とも仲良く過ごせます。寒さに強いですが、暑さには注意が必要です。</p>
+                        <div class="dog-tags">
+                            <span class="tag">大型犬</span>
+                            <span class="tag">穏やか</span>
+                            <span class="tag">働き者</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- モーダルウィンドウ -->
+    <div class="modal" id="dogModal">
+        <div class="modal-content">
+            <button class="close-modal">×</button>
+            <div class="modal-image-container">
+                <img src="" alt="" class="modal-image">
+                <div class="modal-navigation">
+                    <button class="nav-button prev-dog">◀</button>
+                    <button class="nav-button next-dog">▶</button>
+                </div>
+            </div>
+            <div class="modal-info">
+                <h2 class="modal-title"></h2>
+                <div class="modal-tags"></div>
+                <p class="modal-description"></p>
+                <div class="modal-stats">
+                    <div class="stat-item">
+                        <div class="stat-label">体重</div>
+                        <div class="stat-value weight"></div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">性格</div>
+                        <div class="stat-value personality"></div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">特徴</div>
+                        <div class="stat-value features"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+    <!-- 詳細ページのテンプレート -->
+    <div id="detail-page" class="page detail-page">
+        <button class="back-button">◀ 戻る</button>
+        <div class="detail-header">
+            <h1 class="detail-title"></h1>
+            <p class="detail-subtitle"></p>
+        </div>
+        <div class="detail-content">
+            <div class="detail-image-container">
+                <img src="" alt="" class="detail-image">
+            </div>
+            <div class="detail-info">
+                <div class="info-section">
+                    <h2 class="info-title">基本情報</h2>
+                    <div class="detail-stats">
+                        <div class="detail-stat">
+                            <div class="stat-name">原産国</div>
+                            <div class="stat-value country"></div>
+                        </div>
+                        <div class="detail-stat">
+                            <div class="stat-name">体重</div>
+                            <div class="stat-value weight"></div>
+                        </div>
+                        <div class="detail-stat">
+                            <div class="stat-name">寿命</div>
+                            <div class="stat-value lifespan"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="info-section">
+                    <h2 class="info-title">性格と特徴</h2>
+                    <p class="personality-text"></p>
+                </div>
+                <div class="info-section">
+                    <h2 class="info-title">お世話のポイント</h2>
+                    <p class="care-text"></p>
+                </div>
+                <div class="info-section">
+                    <h2 class="info-title">ギャラリー</h2>
+                    <div class="gallery"></div>
                 </div>
             </div>
         </div>
@@ -212,9 +798,217 @@
     </footer>
 
     <script>
+        // 犬種データ
+        const dogData = {
+            'shiba': {
+                name: '柴犬',
+                subtitle: '日本が誇る忠実な家族の一員',
+                country: '日本',
+                weight: '8-10kg',
+                lifespan: '12-15年',
+                personality: '忠実・賢い・活発',
+                personalityText: '柴犬は、日本固有の犬種の中でも特に人気の高い犬種です。その賢さと忠実さは、多くの家族に愛され続けている理由の一つです。警戒心が強く、見知らぬ人には最初用心深い態度を示しますが、一度信頼関係を築くと、家族に対して深い愛情と忠誠心を示します。活発で運動量が多く、定期的な運動を必要とします。特に特徴的なのは、その表情の豊かさで、嬉しい時の"柴犬スマイル"は世界中で人気を集めています。独立心が強く、時には頑固な一面を見せることもありますが、それも含めて柴犬の魅力となっています。',
+                careText: '柴犬のケアで最も重要なのは、適切な運動と被毛のケアです。二重被毛を持つため、特に換毛期には毎日のブラッシングが欠かせません。また、活発な性格を持つため、1日2回以上の散歩が推奨されます。知的な犬種であるため、早期からの適切なしつけと社会化が非常に重要です。以下のポイントに特に注意を払いましょう：\n\n1. 運動管理：\n- 毎日の散歩（朝・夕2回以上）\n- アジリティなどの知的な運動\n- 天候に応じた運動量の調整\n\n2. グルーミング：\n- 毎日のブラッシング\n- 定期的な抜け毛処理\n- 必要に応じたシャンプー\n\n3. 健康管理：\n- 定期的な健康診断\n- 予防接種の管理\n- 食事量の適切な管理\n\n4. しつけと教育：\n- 早期からの社会化\n- 基本的な命令の訓練\n- 一貫した態度での接し方',
+                gallery: [
+                    'https://images.pexels.com/photos/1805164/pexels-photo-1805164.jpeg',
+                    'https://images.pexels.com/photos/262317/pexels-photo-262317.jpeg',
+                    'https://images.pexels.com/photos/2669802/pexels-photo-2669802.jpeg'
+                ]
+            },
+            'akita': {
+                name: '秋田犬',
+                subtitle: '日本の誇る忠誠心の象徴',
+                country: '日本',
+                weight: '35-50kg',
+                lifespan: '10-12年',
+                personality: '忠誠心・穏やか・勇敢',
+                personalityText: '秋田犬は、深い忠誠心と威厳のある性格を持つ日本の国犬です。『ハチ公』で知られるように、飼い主への忠誠心は並外れており、家族を深く愛し守ります。大きな体格ながら、穏やかで控えめな性格を持ち、子供たちとも優しく接することができます。警戒心が強く、優れた番犬としても知られています。',
+                careText: '大型犬であるため、子犬の時期は関節への負担に注意が必要です。二重被毛を持つため、定期的なブラッシングが重要で、特に換毛期には頻繁なグルーミングが必要です。寒さに強い反面、暑さには弱いので、夏場の散歩は朝晩の涼しい時間帯に行うことをお勧めします。早期からの社会化とトレーニングが重要です。',
+                gallery: [
+                    'https://images.pexels.com/photos/3726314/pexels-photo-3726314.jpeg',
+                    'https://images.pexels.com/photos/5763578/pexels-photo-5763578.jpeg',
+                    'https://images.pexels.com/photos/5763621/pexels-photo-5763621.jpeg'
+                ]
+            },
+            'toy-poodle': {
+                name: 'トイプードル',
+                subtitle: '賢く愛らしい、人気の室内犬',
+                country: 'フランス',
+                weight: '3-4kg',
+                lifespan: '12-18年',
+                personality: '賢い・愛情深い・活発',
+                personalityText: 'トイプードルは、非常に賢く、人懐っこい性格の持ち主です。小さな体格ながら、運動神経が良く、様々な芸を覚えることができます。家族との時間を大切にし、特に飼い主との深い絆を築きます。抜け毛が少なく、アレルギー反応が出にくい特徴があり、室内飼いに適しています。',
+                careText: '被毛は常に成長し続けるため、定期的なトリミングが必要不可欠です。4-6週間ごとのプロによるトリミングをお勧めします。小型犬ですが、活発で知的な刺激を必要とするため、適度な運動と遊びの時間を設けましょう。歯の問題が起きやすい犬種のため、歯磨きなどのデンタルケアも重要です。',
+                gallery: [
+                    'https://images.pexels.com/photos/5122188/pexels-photo-5122188.jpeg',
+                    'https://images.pexels.com/photos/2695827/pexels-photo-2695827.jpeg',
+                    'https://images.pexels.com/photos/2797318/pexels-photo-2797318.jpeg'
+                ]
+            },
+            'chihuahua': {
+                name: 'チワワ',
+                subtitle: '小さな体に秘めた大きな勇気',
+                country: 'メキシコ',
+                weight: '1.5-3kg',
+                lifespan: '12-20年',
+                personality: '勇敢・愛着深い・警戒心強い',
+                personalityText: 'チワワは、世界最小の犬種でありながら、大きな勇気と自信を持っています。飼い主に非常に愛着を示し、常に一緒にいたがる傾向があります。知的で学習能力が高く、適切なトレーニングで様々な芸を覚えることができます。警戒心が強く、見知らぬ人には注意深い態度を示します。',
+                careText: '小型犬特有の健康問題に注意が必要です。特に歯の健康管理が重要で、定期的な歯磨きが推奨されます。寒さに弱いため、冬場は服を着せるなどの防寒対策が必要です。活発な性格ですが、過度な運動は避け、室内での適度な運動と遊びを心がけましょう。早期からの社会化が重要で、様々な環境や人との触れ合いを経験させることが大切です。',
+                gallery: [
+                    'https://images.pexels.com/photos/2023384/pexels-photo-2023384.jpeg',
+                    'https://images.pexels.com/photos/5122176/pexels-photo-5122176.jpeg',
+                    'https://images.pexels.com/photos/4588047/pexels-photo-4588047.jpeg'
+                ]
+            },
+            'yorkshire': {
+                name: 'ヨークシャーテリア',
+                subtitle: '小さな体に秘めた大きな活力',
+                country: 'イギリス',
+                weight: '2-3kg',
+                lifespan: '13-16年',
+                personality: '活発・勇敢・賢い',
+                personalityText: 'ヨークシャーテリアは、小さな体格ながら、テリア特有の活発で勇敢な性格を持っています。人間の髪に似た美しい被毛を持ち、知的で学習能力が高い犬種です。家族に深い愛情を示し、警戒心も強いため、優れた番犬としても活躍します。活発で遊び好きな性格ですが、同時に飼い主の膝の上でくつろぐことも大好きです。',
+                careText: '長く美しい被毛を維持するために、毎日のブラッシングと定期的なグルーミングが必要です。小型犬ながら活発な性格のため、適度な運動は必要ですが、過度な運動は避けましょう。歯の健康管理も重要で、定期的な歯磨きが推奨されます。甘やかしすぎると、わがままな性格になる傾向があるため、一貫した躾が大切です。',
+                gallery: [
+                    'https://images.pexels.com/photos/3687770/pexels-photo-3687770.jpeg',
+                    'https://images.pexels.com/photos/1458916/pexels-photo-1458916.jpeg',
+                    'https://images.pexels.com/photos/7516115/pexels-photo-7516115.jpeg'
+                ]
+            },
+            'border-collie': {
+                name: 'ボーダーコリー',
+                subtitle: '世界一賢い犬種の知的な相棒',
+                country: 'イギリス',
+                weight: '18-25kg',
+                lifespan: '12-15年',
+                personality: '知的・勤勉・敏感',
+                personalityText: 'ボーダーコリーは、世界で最も知能が高いとされる犬種です。非常に賢く、学習意欲が高く、複雑な作業も理解することができます。牧羊犬として育てられた歴史から、強い仕事欲があり、常に何かをしたがる活発な性格です。飼い主との深い絆を重視し、指示に対して敏感に反応します。集中力が高く、様々なドッグスポーツでも活躍しています。',
+                careText: '高い知能と豊富なエネルギーを持つため、毎日の運動と知的な刺激が不可欠です。散歩だけでなく、トレーニングやドッグスポーツなどの活動を取り入れることをお勧めします。二重被毛のため、定期的なブラッシングが必要です。また、敏感な性格のため、一貫した躾と早期からの社会化が重要です。退屈させると問題行動につながる可能性があるため、十分な運動と知的な刺激を与えることが大切です。',
+                gallery: [
+                    'https://images.pexels.com/photos/1139795/pexels-photo-1139795.jpeg',
+                    'https://images.pexels.com/photos/2409503/pexels-photo-2409503.jpeg',
+                    'https://images.pexels.com/photos/2737393/pexels-photo-2737393.jpeg'
+                ]
+            },
+            'husky': {
+                name: 'シベリアンハスキー',
+                subtitle: '雪と共に生きる美しき冒険家',
+                country: 'ロシア',
+                weight: '20-30kg',
+                lifespan: '12-15年',
+                personality: '独立心・フレンドリー・活発',
+                personalityText: 'シベリアンハスキーは、そり犬として開発された犬種で、強い独立心と冒険心を持っています。フレンドリーで人懐っこい性格ですが、時として頑固な面も見せます。pack動物としての本能が強く、飼い主を含めた家族との絆を大切にします。高い運動能力と持久力を持ち、特に寒冷地での活動を得意としています。',
+                careText: '豊富な運動量を必要とするため、毎日の長時間の運動が不可欠です。二重被毛を持つため、特に換毛期には頻繁なブラッシングが必要です。暑さに弱いため、夏場は特に注意が必要です。狩猟本能が強いため、小動物を追いかける傾向があり、しっかりとしたトレーニングが必要です。また、脱走傾向があるため、安全な環境作りが重要です。',
+                gallery: [
+                    'https://images.pexels.com/photos/3090875/pexels-photo-3090875.jpeg',
+                    'https://images.pexels.com/photos/2853422/pexels-photo-2853422.jpeg',
+                    'https://images.pexels.com/photos/3715583/pexels-photo-3715583.jpeg'
+                ]
+            },
+            'shiba': {
+                name: '柴犬',
+                weight: '8-10kg',
+                personality: '忠実・賢い・活発',
+                features: '日本固有種・表情豊か',
+                extendedDescription: '日本の犬種の中で最も古い歴史を持つ犬種の一つです。狩猟犬として優れた能力を持ち、現代では家庭犬として世界中で愛されています。警戒心が強く、家族を守る忠実な番犬としても優れています。表情が豊かで、特に"柴犬スマイル"と呼ばれる愛らしい表情で人気があります。'
+            },
+            'akita': {
+                name: '秋田犬',
+                weight: '35-50kg',
+                personality: '忠誠心・穏やか・勇敢',
+                features: '天然記念物・二重被毛',
+                extendedDescription: '日本を代表する大型犬で、その忠誠心の強さは『ハチ公』の物語でも有名です。かつては熊狩りにも使用された勇敢な犬種で、現在は家庭犬として、また日本の文化財としても大切にされています。二重被毛により寒さに強く、温厚で家族思いな性格が特徴です。'
+            },
+            'toy-poodle': {
+                name: 'トイプードル',
+                weight: '3-4kg',
+                personality: '賢い・愛情深い・活発',
+                features: '低アレルギー・長寿',
+                extendedDescription: '非常に賢く、サーカスでも活躍できるほどの高い学習能力を持っています。抜け毛が少なく、アレルギー反応が出にくい犬種として知られています。定期的なトリミングが必要ですが、その分おしゃれを楽しむことができます。好奇心旺盛で、様々な芸を覚えることができます。'
+            },
+            'chihuahua': {
+                name: 'チワワ',
+                weight: '1.5-3kg',
+                personality: '勇敢・愛着深い・警戒心強い',
+                features: '世界最小の犬種',
+                extendedDescription: '小さな体に大きな心を持つ犬種です。体が小さいため持ち運びが容易で、室内飼育に適していますが、勇敢な性格で大きな犬にも臆することはありません。飼い主への愛着が非常に強く、常に一緒にいたがる傾向があります。頭が良く、適切なトレーニングで様々な芸を覚えることができます。'
+            },
+            'yorkshire': {
+                name: 'ヨークシャーテリア',
+                weight: '2-3kg',
+                personality: '活発・勇敢・賢い',
+                features: 'シルクのような被毛',
+                extendedDescription: 'もともとはネズミ捕りのために育てられた犬種で、小さな体ながら勇敢で活発な性格を持っています。美しい長い被毛は人間の髪に似た質感を持ち、アレルギー反応が少ないのが特徴です。知的で学習能力が高く、警戒心も強いため、番犬としても優れています。'
+            },
+            'border-collie': {
+                name: 'ボーダーコリー',
+                weight: '18-25kg',
+                personality: '知的・勤勉・敏感',
+                features: '世界一賢い犬種',
+                extendedDescription: '世界で最も知能が高いとされる犬種です。牧羊犬として羊の群れを管理する能力に優れ、その知性は人間の3歳児に匹敵するとも言われています。運動量が多く、毎日のトレーニングや運動が欠かせません。飼い主との深い絆を重視し、常に学習意欲が高い状態を保っています。'
+            },
+            'husky': {
+                name: 'シベリアンハスキー',
+                weight: '20-30kg',
+                personality: '独立心・フレンドリー・活発',
+                features: 'そり犬・耐寒性',
+                extendedDescription: 'シベリアの過酷な環境で育てられた犬種で、優れた持久力と寒さへの耐性を持っています。そり犬として活躍し、チームワークに優れています。独立心が強く、時には頑固な面も見せますが、家族に対して非常に愛情深い犬種です。美しい青い目を持つ個体も多く見られます。'
+            },
+            'golden': {
+                name: 'ゴールデン・レトリバー',
+                subtitle: '優しい心を持つ家族の人気者',
+                country: 'イギリス',
+                weight: '25-34kg',
+                lifespan: '10-13年',
+                personality: '優しい・知的・忠実',
+                personalityText: 'ゴールデン・レトリバーは、その優しい性格と高い知性で世界中で愛されている犬種です。特に子供との相性が抜群で、忍耐強く穏やかな性格を持っています。介助犬やセラピー犬としても活躍し、人との関わりを大切にする犬種です。運動を好み、特に水泳が得意です。学習能力が高く、様々な訓練にも適しています。',
+                careText: '長い被毛を持つため、週2-3回のブラッシングが必要です。運動量が多く、毎日の十分な運動が欠かせません。知的な刺激も重要で、トレーニングや遊びを通じて、心身ともに健康を保つことが大切です。大型犬なので、関節への負担を考慮し、子犬の時期は適度な運動を心がけましょう。また、肥満傾向にあるため、食事管理も重要です。',
+                gallery: [
+                    'https://images.pexels.com/photos/1490908/pexels-photo-1490908.jpeg',
+                    'https://images.pexels.com/photos/3397935/pexels-photo-3397935.jpeg',
+                    'https://images.pexels.com/photos/2253275/pexels-photo-2253275.jpeg'
+                ]
+            }
+        };
+
+        // カテゴリーフィルター機能
+        const categoryButtons = document.querySelectorAll('.category-button');
+        const dogCards = document.querySelectorAll('.dog-card');
+        const sections = document.querySelectorAll('.category-section');
+
+        categoryButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // ボタンのアクティブ状態を更新
+                categoryButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                const category = button.dataset.category;
+                
+                // セクションの表示/非表示を制御
+                sections.forEach(section => {
+                    if (category === 'all' || section.id === category) {
+                        section.style.display = 'block';
+                        setTimeout(() => section.classList.add('visible'), 100);
+                    } else {
+                        section.classList.remove('visible');
+                        setTimeout(() => section.style.display = 'none', 500);
+                    }
+                });
+
+                // カードのフィルタリング
+                dogCards.forEach(card => {
+                    if (category === 'all' || card.dataset.category === category) {
+                        card.style.display = 'block';
+                        setTimeout(() => card.classList.add('visible'), 100);
+                    } else {
+                        card.classList.remove('visible');
+                        setTimeout(() => card.style.display = 'none', 500);
+                    }
+                });
+            });
+        });
 
         // カード表示時のアニメーション
-        const cards = document.querySelectorAll('.dog-card');
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -224,12 +1018,269 @@
             });
         });
 
-        cards.forEach(card => {
+        dogCards.forEach(card => {
             card.style.opacity = '0';
             card.style.transform = 'translateY(50px)';
             card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
             observer.observe(card);
         });
+
+        // 画像ホバーエフェクト
+        dogCards.forEach(card => {
+            const image = card.querySelector('.dog-image');
+            
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = (y - centerY) / 20;
+                const rotateY = (centerX - x) / 20;
+                
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+            });
+        });
+
+        // スクロールトップボタン
+        const scrollTopButton = document.createElement('button');
+        scrollTopButton.innerHTML = '↑';
+        scrollTopButton.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            font-size: 24px;
+            box-shadow: 0 2px 10px rgba(255, 153, 153, 0.3);
+        `;
+        document.body.appendChild(scrollTopButton);
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                scrollTopButton.style.opacity = '1';
+                scrollTopButton.style.transform = 'translateY(0)';
+            } else {
+                scrollTopButton.style.opacity = '0';
+                scrollTopButton.style.transform = 'translateY(20px)';
+            }
+        });
+
+        scrollTopButton.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // 初期表示時のアニメーション
+        // ページ遷移の処理
+        const mainPage = document.getElementById('main-page');
+        const detailPage = document.getElementById('detail-page');
+        const backButton = document.querySelector('.back-button');
+
+        // 画像クリックで詳細ページを表示
+        document.querySelectorAll('.dog-image').forEach(image => {
+            image.addEventListener('click', (e) => {
+                const card = e.target.closest('.dog-card');
+                const title = card.querySelector('.dog-name').textContent;
+                const dogId = getDogId(title);
+                showDetailPage(dogId);
+            });
+        });
+
+        // 戻るボタンのイベント
+        backButton.addEventListener('click', () => {
+            detailPage.classList.remove('active');
+            mainPage.classList.add('active');
+            window.scrollTo(0, 0);
+        });
+
+        // 詳細ページを表示する関数
+        function showDetailPage(dogId) {
+            const data = dogData[dogId];
+            
+            // 詳細ページの要素を更新
+            detailPage.querySelector('.detail-title').textContent = data.name;
+            detailPage.querySelector('.detail-subtitle').textContent = data.subtitle;
+            detailPage.querySelector('.detail-image').src = data.gallery[0];
+            detailPage.querySelector('.detail-image').alt = data.name;
+            
+            // 基本情報を更新
+            detailPage.querySelector('.country').textContent = data.country;
+            detailPage.querySelector('.weight').textContent = data.weight;
+            detailPage.querySelector('.lifespan').textContent = data.lifespan;
+            
+            // 性格と特徴を更新
+            const personalityText = detailPage.querySelector('.personality-text');
+            personalityText.innerHTML = data.personalityText.replace(/\n/g, '<br>');
+            
+            // お世話のポイントを更新
+            const careText = detailPage.querySelector('.care-text');
+            careText.innerHTML = data.careText.replace(/\n/g, '<br>');
+            
+            // ギャラリーを更新
+            const gallery = detailPage.querySelector('.gallery');
+            gallery.innerHTML = data.gallery.map(url => `
+                <img src="${url}" alt="${data.name}" class="gallery-image" onclick="window.open(this.src, '_blank')">
+            `).join('');
+            
+            // ページを切り替え
+            mainPage.classList.remove('active');
+            detailPage.classList.add('active');
+            window.scrollTo(0, 0);
+            document.body.style.overflow = 'auto';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            sections.forEach(section => {
+                section.classList.add('visible');
+            });
+        });
+
+        // モーダルウィンドウの機能
+        const modal = document.getElementById('dogModal');
+        const modalImage = modal.querySelector('.modal-image');
+        const modalTitle = modal.querySelector('.modal-title');
+        const modalDescription = modal.querySelector('.modal-description');
+        const modalTags = modal.querySelector('.modal-tags');
+        const modalWeight = modal.querySelector('.weight');
+        const modalPersonality = modal.querySelector('.personality');
+        const modalFeatures = modal.querySelector('.features');
+        const closeButton = modal.querySelector('.close-modal');
+        const prevButton = modal.querySelector('.prev-dog');
+        const nextButton = modal.querySelector('.next-dog');
+
+        let currentDogCards = [];
+        let currentDogIndex = 0;
+
+        // 画像クリックでモーダルを開く
+        document.querySelectorAll('.dog-image').forEach(image => {
+            image.addEventListener('click', (e) => {
+                const card = e.target.closest('.dog-card');
+                const cardCategory = card.dataset.category;
+                
+                // 現在表示中の同じカテゴリーの犬カードを取得
+                currentDogCards = Array.from(document.querySelectorAll(`.dog-card[data-category="${cardCategory}"]:not([style*="display: none"])`));
+                currentDogIndex = currentDogCards.indexOf(card);
+
+                // モーダルの内容を設定
+                updateModalContent(card);
+                
+                // モーダルを表示
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+
+                // ハートアニメーション
+                const heart = document.createElement('div');
+                heart.innerHTML = '♥';
+                heart.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    font-size: 150px;
+                    color: var(--primary-color);
+                    opacity: 0;
+                    z-index: 1001;
+                    animation: heartBeat 1.5s ease-in-out;
+                `;
+                document.body.appendChild(heart);
+                setTimeout(() => heart.remove(), 1500);
+            });
+        });
+
+        // モーダルを閉じる
+        closeButton.addEventListener('click', () => {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+
+        // モーダルの外側をクリックして閉じる
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+
+        // 前の犬を表示
+        prevButton.addEventListener('click', () => {
+            currentDogIndex = (currentDogIndex - 1 + currentDogCards.length) % currentDogCards.length;
+            updateModalContent(currentDogCards[currentDogIndex]);
+        });
+
+        // 次の犬を表示
+        nextButton.addEventListener('click', () => {
+            currentDogIndex = (currentDogIndex + 1) % currentDogCards.length;
+            updateModalContent(currentDogCards[currentDogIndex]);
+        });
+
+        // キーボードでの操作
+        document.addEventListener('keydown', (e) => {
+            if (modal.classList.contains('active')) {
+                if (e.key === 'Escape') {
+                    modal.classList.remove('active');
+                    document.body.style.overflow = '';
+                } else if (e.key === 'ArrowLeft') {
+                    prevButton.click();
+                } else if (e.key === 'ArrowRight') {
+                    nextButton.click();
+                }
+            }
+        });
+
+        // モーダルの内容を更新する関数
+        function updateModalContent(card) {
+            const img = card.querySelector('.dog-image');
+            const title = card.querySelector('.dog-name').textContent;
+            const tags = Array.from(card.querySelectorAll('.tag')).map(tag => tag.textContent);
+            
+            // 犬種データから追加情報を取得
+            const dogId = getDogId(title);
+            const data = dogData[dogId];
+
+            modalImage.src = img.src;
+            modalImage.alt = img.alt;
+            modalTitle.textContent = title;
+            
+            // タグを更新
+            modalTags.innerHTML = tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+            
+            // 詳細情報を更新
+            modalDescription.textContent = data.extendedDescription;
+            modalWeight.textContent = data.weight;
+            modalPersonality.textContent = data.personality;
+            modalFeatures.textContent = data.features;
+        }
+
+        // 犬種名からIDを取得する関数
+        function getDogId(name) {
+            const mapping = {
+                '柴犬': 'shiba',
+                '秋田犬': 'akita',
+                'トイプードル': 'toy-poodle',
+                'チワワ': 'chihuahua',
+                'ヨークシャーテリア': 'yorkshire',
+                'ボーダーコリー': 'border-collie',
+                'シベリアンハスキー': 'husky',
+                'ゴールデン・レトリバー': 'golden'
+            };
+            return mapping[name];
+        }
     </script>
 </body>
 </html>
