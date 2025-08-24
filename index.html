@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>わんちゃん図鑑🐕</title>
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fff5f5;
+            background-image: 
+                radial-gradient(#ffcdd2 2px, transparent 2px),
+                radial-gradient(#ffcdd2 2px, transparent 2px);
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #ff9999 0%, #ffb6c1 100%);
+            color: white;
+            text-align: center;
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(255, 153, 153, 0.3);
+        }
+
+        .header-title {
+            font-size: 3rem;
+            font-weight: 700;
+            text-shadow: 3px 3px 0 #ff7777;
+            animation: wiggle 2.5s ease-in-out infinite;
+        }
+
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(-3deg); }
+            50% { transform: rotate(3deg); }
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            margin-top: 1rem;
+            color: #fff;
+            text-shadow: 1px 1px 0 #ff7777;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .dog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+            margin-top: 3rem;
+            padding: 1rem;
+        }
+
+        .dog-card {
+            background: white;
+            border-radius: 25px;
+            box-shadow: 0 8px 25px rgba(255, 153, 153, 0.2);
+            overflow: hidden;
+            transition: all 0.4s ease;
+            position: relative;
+            border: 3px solid #ffcdd2;
+        }
+
+        .dog-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(255, 153, 153, 0.3);
+        }
+
+        .dog-card::before {
+            content: "♥";
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            color: #ff9999;
+            z-index: 1;
+        }
+
+        .dog-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .dog-info {
+            padding: 1.5rem;
+        }
+
+        .dog-name {
+            font-size: 1.5rem;
+            color: #ff6b6b;
+            margin-bottom: 0.5rem;
+        }
+
+        .dog-description {
+            color: #666;
+            line-height: 1.8;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .dog-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background-color: #ffebee;
+            color: #ff6b6b;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            border: 2px solid #ffcdd2;
+        }
+
+        footer {
+            background: linear-gradient(135deg, #ff9999 0%, #ffb6c1 100%);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+            position: relative;
+        }
+
+        footer::before {
+            content: "";
+            position: absolute;
+            top: -20px;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: white;
+            clip-path: polygon(0 0, 100% 0, 50% 100%);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1 class="header-title">🐕 かわいい犬図鑑 🐕</h1>
+    </header>
+
+    <div class="container">
+        <div class="dog-grid">
+            <div class="dog-card">
+                <img src="/images/shiba.jpg" alt="柴犬" class="dog-image">
+                <div class="dog-info">
+                    <h2 class="dog-name">柴犬</h2>
+                    <p class="dog-description">日本固有の犬種で、忠実で賢く、愛情深い性格が特徴です。小型で活発、そして表情が豊かな愛らしい犬種です。</p>
+                    <div class="dog-tags">
+                        <span class="tag">日本犬</span>
+                        <span class="tag">賢い</span>
+                        <span class="tag">忠実</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dog-card">
+                <img src="/images/golden.jpg" alt="ゴールデン・レトリバー" class="dog-image">
+                <div class="dog-info">
+                    <h2 class="dog-name">ゴールデン・レトリバー</h2>
+                    <p class="dog-description">優しい性格と知的な表情が特徴的な大型犬です。家族思いで、特に子供との相性が抜群です。</p>
+                    <div class="dog-tags">
+                        <span class="tag">大型犬</span>
+                        <span class="tag">優しい</span>
+                        <span class="tag">家族向き</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dog-card">
+                <img src="/images/poodle.jpg" alt="トイプードル" class="dog-image">
+                <div class="dog-info">
+                    <h2 class="dog-name">トイプードル</h2>
+                    <p class="dog-description">賢く愛らしい小型犬の代表格です。利口で学習能力が高く、とても愛情深い性格をしています。</p>
+                    <div class="dog-tags">
+                        <span class="tag">小型犬</span>
+                        <span class="tag">利口</span>
+                        <span class="tag">愛情深い</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dog-card">
+                <img src="/images/chihuahua.jpg" alt="チワワ" class="dog-image">
+                <div class="dog-info">
+                    <h2 class="dog-name">チワワ</h2>
+                    <p class="dog-description">世界最小の犬種として知られる愛らしい犬です。勇敢で忠実な性格で、飼い主に深く愛着を示します。</p>
+                    <div class="dog-tags">
+                        <span class="tag">超小型犬</span>
+                        <span class="tag">勇敢</span>
+                        <span class="tag">愛着深い</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 かわいい犬図鑑</p>
+    </footer>
+
+    <script>
+
+        // カード表示時のアニメーション
+        const cards = document.querySelectorAll('.dog-card');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        });
+
+        cards.forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(50px)';
+            card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>
